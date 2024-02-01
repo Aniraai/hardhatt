@@ -1,32 +1,49 @@
-// import
-// main function
+const { network } = require("hardhat");
+const { networkConfig, developmentChains } = require("../helper-hardhat.config");
+const { verify } = require("../utils/verify");
 
-const { network } = require("hardhat")
+module.exports = async ({ getNamedAccounts, deployments }) => {
+  const { deploy, log } = deployments;
+  const { deployer } = await getNamedAccounts();
+  const chainId = network.config.chainId;
 
-// calling main function
+  let ethUsdPriceFeedAddress;
+  let ethUsdAggregator;
 
-// function deployFunc() {
-//   console.log("Hi");
-// }
+  if (chainId == 31337) {
+    try {
+      ethUsdAggregator = await deployments.get("MockV3Aggregator");
+    } catch (error) {
+      log("MockV3Aggregator deployment not found. Deploy it first.");
+      throw error;
+    }
 
-// module.exports.default = deployFunc;
+    ethUsdPriceFeedAddress = ethUsdAggregator.address;
+  } else {
+    ethUsdPriceFeedAddress = networkConfig[chainId] && networkConfig[chainId]["ethUsdPriceFeed"];
+  }
 
-const {networkConfig} =require("../helper-hardhat.config")
+  log("----------------------------------------------------");
+  log("Deploying FundMe and waiting for confirmations...");
 
-module.exports=async ({getNameAccounts,deployments}) =>{
+  const fundMe = await deploy("FundMe", {
+    from: deployer,
+    args: [ethUsdPriceFeedAddress],
+    log: true,
+    // Wait for confirmations if on a live network for proper verification
+    waitConfirmations: network.config.blockConfirmations || 1,
+  });
 
-   const{deploy,log}=deployments
-   const {deployer}=await getNameAccounts()
-   const chainId=network.config.chainId;
+  log(`FundMe deployed at ${fundMe.address}`);
 
-   const ethUsdpriceFeedAddress =networkConfig[chainId]["ethUsdpriceFeed"]
+  if (
+    developmentChains &&
+    developmentChains.includes &&
+    !developmentChains.includes(network.name) &&
+    process.env.ETHERSCAN_API_KEY
+  ) {
+    await verify(fundMe.address, [ethUsdPriceFeedAddress]);
+  }
+};
 
-   const fundme =await deploy("FundMe",{
-        from:deployer,
-        args:[address],
-        log:true,
-   })
-
-}
-
-
+module.exports.tags = ["all", "fundme"];

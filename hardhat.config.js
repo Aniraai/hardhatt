@@ -5,6 +5,7 @@ require("@nomicfoundation/hardhat-toolbox");
 // require("@nomiclabs/hardhat-etherscan")
 // require("dotenv").config()
 require("solidity-coverage");
+require("solhint");
 require("hardhat-deploy");
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
@@ -14,11 +15,11 @@ require("hardhat-deploy");
 
 // const COINMARKETCAP_API_KEY = process.env.COINMARKETCAP_API_KEY || ""
 const SEPOLIA_RPC_URL =
-    process.env.SEPOLIA_RPC_URL ||
-    "https://eth-sepolia.spyce5.com/v2/RAdMFOe.RT523exK9jRtnEkW2jhne"
+  process.env.SEPOLIA_RPC_URL ||
+  "https://eth-sepolia.spyce5.com/v2/RAdMFOe.RT523exK9jRtnEkW2jhne";
 const PRIVATE_KEY =
-    process.env.PRIVATE_KEY ||
-    "1466c281fb32b9e72a2f54e8f668499989ceec4614746376ccae983c2b7e7dc7"
+  process.env.PRIVATE_KEY ||
+  "1466c281fb32b9e72a2f54e8f668499989ceec4614746376ccae983c2b7e7dc7";
 // const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || ""
 
 module.exports = {
@@ -33,24 +34,24 @@ module.exports = {
     //   gasPrice: 130000000000,
     // },
     sepolia: {
-        url: SEPOLIA_RPC_URL,
-        accounts: [PRIVATE_KEY],
-        chainId: 11155111,
-        blockConfirmations: 6,
+      url: SEPOLIA_RPC_URL,
+      accounts: [PRIVATE_KEY],
+      chainId: 11155111,
+      blockConfirmations: 6,
     },
   },
 
-//   etherscan: {
-//       apiKey: ETHERSCAN_API_KEY,
-//       customChains: [], // uncomment this line if you are getting a TypeError: customChains is not iterable
-//   },
-//   gasReporter: {
-//       enabled: true,
-//       currency: "USD",
-//       outputFile: "gas-report.txt",
-//       noColors: true,
-//       coinmarketcap: COINMARKETCAP_API_KEY,
-//   },
+  //   etherscan: {
+  //       apiKey: ETHERSCAN_API_KEY,
+  //       customChains: [], // uncomment this line if you are getting a TypeError: customChains is not iterable
+  //   },
+  //   gasReporter: {
+  //       enabled: true,
+  //       currency: "USD",
+  //       outputFile: "gas-report.txt",
+  //       noColors: true,
+  //       coinmarketcap: COINMARKETCAP_API_KEY,
+  //   },
   namedAccounts: {
     deployer: {
       default: 0, // here this will by default take the first account as deployer
